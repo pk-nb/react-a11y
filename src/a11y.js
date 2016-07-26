@@ -44,19 +44,19 @@ export default class A11y {
       // create a refs object to hold the ref.
       // this needs to be an object so that it can be passed
       // by reference, and hold chaning state.
-      const refs = typeof props.ref === 'string' ? props.ref : {}
-      const ref  = typeof props.ref === 'string'
-        ? props.ref
+      const refs = typeof props.__reference === 'string' ? props.__reference : {}
+      const ref = typeof props.__reference === 'string'
+        ? props.__reference
         : function (node) {
           refs.node = node
 
           // maintain behaviour when ref prop was already set
-          if ( typeof props.ref === 'function' ) {
-            props.ref(node)
+          if ( typeof props.__reference === 'function' ) {
+            props.__reference(node)
           }
         }
 
-      const newProps  = typeof klass === 'string' ? { ...props, ref } : props
+      const newProps  = typeof klass === 'string' ? { ref, __reference: ref, ...props } : props
 
       const reactEl   = that._createElement(klass, newProps, ...children)
 
@@ -137,7 +137,7 @@ export default class A11y {
           } else if ( 'node' in ref ) {
             DOMNode = ref.node
           } else {
-            throw new Error('could not resolve ref')
+            DOMNode = null
           }
 
           reporter({ ...info, DOMNode })
